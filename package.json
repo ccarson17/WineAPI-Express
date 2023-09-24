@@ -1,0 +1,46 @@
+{
+  "name": "wineapi-express",
+  "version": "1.0.0",
+  "description": "API for OenoFile using node.js and Express",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint app.js",
+    "start": "@powershell $env:DEBUG='wineapi-express,wineapi-express:*,-express:router*' ; nodemon app.js",
+    "debug": "@powershell $env:DEBUG='*,-express:router*' ; node app.js",
+    "test": "mocha tests/**/*Tests.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "debug": "^4.3.4",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.1",
+    "swagger-ui-express": "^5.0.0",
+    "uuid": "^9.0.1"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "delay": 1000,
+    "env": {
+      "PORT": 4000
+    }
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "eslint": "^8.49.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-standard-with-typescript": "^39.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-n": "^16.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "mocha": "^10.2.0",
+    "should": "^13.2.3",
+    "sinon": "^16.0.0",
+    "supertest": "^6.3.3",
+    "typescript": "*"
+  }
+}

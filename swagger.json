@@ -1,0 +1,1059 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "OenoFile Express API",
+    "description": "API service for the OenoFile web and mobile app",
+    "contact": {
+      "email": "ccarson17@gmail.com"
+    },
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "bottle",
+      "description": "CRUD for wine bottle data"
+    },
+    {
+      "name": "rack",
+      "description": "CRUD for wine rack data"
+    },
+    {
+      "name": "user",
+      "description": "Operations for users (admin only)"
+    }
+  ],
+  "paths": {
+    "/api/v1/bottle": {
+      "get": {
+        "tags": [
+          "bottle"
+        ],
+        "summary": "Finds bottles",
+        "description": "Will return bottles matching your ownerId and query parameters",
+        "operationId": "getBottles",
+        "parameters": [
+          {
+            "name": "vintner",
+            "in": "query",
+            "description": "vintner",
+            "example": "Benziger",
+            "required": false,
+            "explode": true
+          },
+          {
+            "name": "varietal",
+            "in": "query",
+            "description": "varietal",
+            "example": "Merlot",
+            "required": false,
+            "explode": true
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "category",
+            "example": "Red",
+            "required": false,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Bottle"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Bottle"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "bottle"
+        ],
+        "summary": "Create a new bottle",
+        "description": "Insert a new bottle into the DB",
+        "operationId": "postBottle",
+        "requestBody": {
+          "description": "Insert a new bottle into the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation (created)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bottle"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bottle"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          }
+        }
+      }
+    },
+    "/api/v1/bottle/{id}": {
+      "get": {
+        "tags": [
+          "bottle"
+        ],
+        "summary": "Finds a bottle by its ID",
+        "description": "Will return bottles matching your ownerId",
+        "operationId": "getBottleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Bottle ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Bottle"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Bottle"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "bottle"
+        ],
+        "summary": "Update an existing bottle",
+        "description": "Update an existing bottle by Id",
+        "operationId": "putBottle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Bottle ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "requestBody": {
+          "description": "Update an existing bottle in the DB (full update)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bottle"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bottle"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "Bottle not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "bottle"
+        ],
+        "summary": "Update an existing bottle",
+        "description": "Update an existing bottle by Id",
+        "operationId": "patchBottle",
+        "requestBody": {
+          "description": "Update an existing bottle in the DB (partial update)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Bottle"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Bottle ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bottle"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bottle"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "Bottle not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "bottle"
+        ],
+        "summary": "Delete an existing bottle",
+        "description": "Delete an existing bottle by Id",
+        "operationId": "deleteBottle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Bottle ID to delete",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation (no content)"
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "Bottle not found"
+          }
+        }
+      }
+    },
+    "/api/v1/rack": {
+      "get": {
+        "tags": [
+          "rack"
+        ],
+        "summary": "Finds racks",
+        "description": "Will return racks matching your ownerId",
+        "operationId": "getRacks",
+        "parameters": [
+          {
+            "name": "rackName",
+            "in": "query",
+            "description": "Rack Name",
+            "example": "Dining Room",
+            "required": false,
+            "explode": true
+          },
+          {
+            "name": "rackLayout",
+            "in": "query",
+            "description": "Rack Layout",
+            "example": "Rectangle",
+            "required": false,
+            "explode": true
+          },
+          {
+            "name": "rackStyle",
+            "in": "query",
+            "description": "Rack Style",
+            "example": "{\"color\": \"red\", \"weight\": \"heavy\"}",
+            "required": false,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Rack"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Rack"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "rack"
+        ],
+        "summary": "Create a new rack",
+        "description": "Insert a new rack into the DB",
+        "operationId": "postRack",
+        "requestBody": {
+          "description": "Insert a new rack into the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation (created)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rack"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          }
+        }
+      }
+    },
+    "/api/v1/rack/{id}": {
+      "get": {
+        "tags": [
+          "rack"
+        ],
+        "summary": "Finds a rack by its ID",
+        "description": "Will return racks matching your ownerId",
+        "operationId": "getRackById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Rack ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Rack"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Rack"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "rack"
+        ],
+        "summary": "Update an existing rack",
+        "description": "Update an existing rack by Id",
+        "operationId": "putRack",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Rack ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "requestBody": {
+          "description": "Update an existing rack in the DB (full update)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rack"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "Rack not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "rack"
+        ],
+        "summary": "Update an existing rack",
+        "description": "Update an existing rack by Id",
+        "operationId": "patchRack",
+        "requestBody": {
+          "description": "Update an existing rack in the DB (partial update)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Rack"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Rack ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rack"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "Rack not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "rack"
+        ],
+        "summary": "Delete an existing rack",
+        "description": "Delete an existing rack by Id",
+        "operationId": "deleteRack",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Rack ID to delete",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation (no content)"
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "Rack not found"
+          }
+        }
+      }
+    },
+    "/api/v1/user": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Finds users",
+        "description": "Finds all users or by userName in query",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "User Name",
+            "example": "JoeSmith",
+            "required": false,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create a new user",
+        "description": "Insert a new user into the DB",
+        "operationId": "postUser",
+        "requestBody": {
+          "description": "Insert a new user into the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation (created)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          }
+        }
+      }
+    },
+    "/api/v1/user/{id}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Finds a user by its ID",
+        "description": "Will return users matching your ownerId",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update an existing user",
+        "description": "Update an existing user by Id",
+        "operationId": "putUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "requestBody": {
+          "description": "Update an existing user in the DB (full update)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update an existing user",
+        "description": "Update an existing user by Id",
+        "operationId": "patchUser",
+        "requestBody": {
+          "description": "Update an existing user in the DB (partial update)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID to update",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete an existing user",
+        "description": "Delete an existing user by Id",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID to delete",
+            "required": true,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation (no content)"
+          },
+          "400": {
+            "description": "Bad request data"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Bottle": {
+        "required": [
+          "vintner",
+          "varietal",
+          "category"
+        ],
+        "type": "object",
+        "properties": {
+          "vintner": {
+            "type": "string",
+            "example": "Benziger"
+          },
+          "varietal": {
+            "type": "string",
+            "example": "Merlot"
+          },
+          "category": {
+            "type": "string",
+            "example": "Red"
+          }
+        },
+        "xml": {
+          "name": "bottle"
+        }
+      },
+      "Rack": {
+        "required": [
+          "ownerId",
+          "rackName",
+          "rows",
+          "cols"
+        ],
+        "type": "object",
+        "properties": {
+          "ownerId": {
+            "type": "string",
+            "example": "650f6a4fea9ba999ce999999"
+          },
+          "rackName": {
+            "type": "string",
+            "example": "Dining Room"
+          },
+          "rackLayout": {
+            "type": "string",
+            "example": "Rectangle"
+          },
+          "rackStyle": {
+            "type": "string",
+            "example": "{\"color\": \"red\", \"weight\": \"heavy\"}"
+          },
+          "rows": {
+            "type": "integer",
+            "example": 5
+          },
+          "cols": {
+            "type": "integer",
+            "example": 5
+          }
+        },
+        "xml": {
+          "name": "bottle"
+        }
+      },
+      "User": {
+        "required": [
+          "userName"
+        ],
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string",
+            "example": "JoeSmith"
+          }
+        },
+        "xml": {
+          "name": "user"
+        }
+      }
+    },
+    "requestBodies": {
+      "Bottle": {
+        "description": "Bottle object that needs to be added to the DB",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Bottle"
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/Bottle"
+            }
+          }
+        }
+      },
+      "Rack": {
+        "description": "Rack object that needs to be added to the DB",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Rack"
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/Rack"
+            }
+          }
+        }
+      },
+      "User": {
+        "description": "User object that needs to be added to the DB",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": { }
+  }
+}
