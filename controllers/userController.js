@@ -4,8 +4,8 @@ import Debug from 'debug';
 function createUserLinks(host, user) {
   const links = {};
   links.self = `http://${host}/api/v1/users/${user._id}`;
-  links.MyBottles = `http://${host}/api/v1/bottles/?ownerId=${user._id}`;
-  links.MyRacks = `http://${host}/api/v1/racks/?ownerId=${user._id}`;
+  links.MyBottles = `http://${host}/api/v1/bottle/?ownerId=${user._id}`;
+  links.MyRacks = `http://${host}/api/v1/rack/?ownerId=${user._id}`;
   return links;
 }
 
@@ -16,6 +16,7 @@ function userController(User) {
     if (!data || !data.userName) {
       res.status(400);
       res.send('missing required items in post body');
+      return;
     }
     const user = new User(req.body);
     debug('Saving user...');

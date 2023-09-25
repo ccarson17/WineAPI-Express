@@ -4,8 +4,8 @@ import Debug from 'debug';
 function createRackLinks(host, rack) {
   const links = {};
   links.self = `http://${host}/api/v1/racks/${rack._id}`;
-  links.FilterBottlesByThisRack = `http://${host}/api/v1/bottles/?rackId=${rack._id}`;
-  links.FilterRacksByThisOwner = `http://${host}/api/v1/racks/?ownerId=${rack.ownerId}`;
+  links.FilterBottlesByThisRack = `http://${host}/api/v1/bottle/?rackId=${rack._id}`;
+  links.FilterRacksByThisOwner = `http://${host}/api/v1/rack/?ownerId=${rack.ownerId}`;
   return links;
 }
 
@@ -16,11 +16,13 @@ function rackController(Rack) {
     if (!data || !data.guid || !data.ownerGuid || !data.rackName) {
       res.status(400);
       res.send('missing required items in post body');
+      return;
     }
     if (!Number.isInteger(data.rows) || data.rows < 1
     || !Number.isInteger(data.cols) || data.cols < 1) {
       res.status(400);
       res.send('rows and cols must be integers greater than 0');
+      return;
     }
     const rack = new Rack(req.body);
     debug('Saving rack...');

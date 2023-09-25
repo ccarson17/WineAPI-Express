@@ -6,10 +6,10 @@ function createBottleLinks(host, bottle) {
   const varietal = bottle.varietal ? bottle.varietal.replace(' ', '%20') : '';
   const type = bottle.category ? bottle.category.replace(' ', '%20') : '';
   const links = {};
-  links.self = `http://${host}/api/v1/bottles/${bottle._id}`;
-  links.FilterByThisVintner = `http://${host}/api/v1/bottles/?vintner=${vintner}`;
-  links.FilterByThisVarietal = `http://${host}/api/v1/bottles/?varietal=${varietal}`;
-  links.FilterByThisType = `http://${host}/api/v1/bottles/?type=${type}`;
+  links.self = `http://${host}/api/v1/bottle/${bottle._id}`;
+  links.FilterByThisVintner = `http://${host}/api/v1/bottle/?vintner=${vintner}`;
+  links.FilterByThisVarietal = `http://${host}/api/v1/bottle/?varietal=${varietal}`;
+  links.FilterByThisType = `http://${host}/api/v1/bottle/?type=${type}`;
   return links;
 }
 
@@ -20,6 +20,7 @@ function bottleController(Bottle) {
     if (!data || !data.vintner || !data.varietal || !data.category) {
       res.status(400);
       res.send('missing required items in post body');
+      return;
     }
     const bottle = new Bottle(req.body);
     debug('Saving bottle...');
@@ -30,40 +31,37 @@ function bottleController(Bottle) {
     res.status(201);
     res.json(newBottle);
   }
-  function get(req, res) {
-    (async function Result() {
-      const query = {};
-      if (req.query.vintner) query.vintner = req.query.vintner;
-      if (req.query.varietal) query.varietal = req.query.varietal;
-      if (req.query.category) query.category = req.query.category;
-      debug('Finding bottles...');
-      const bottles = await Bottle.find(query);
-      const returnBottles = bottles.map((bottle) => {
-        const newBottle = bottle.toJSON();
-        newBottle.links = createBottleLinks(req.headers.host, bottle.toJSON()); // HATEOAS links
-        return newBottle;
-      });
-      return res.json(returnBottles);
-    }());
+  async function get(req, res) {
+    const query = {};
+    if (req.query.vintner) query.vintner = req.query.vintner;
+    if (req.query.varietal) query.varietal = req.query.varietal;
+    if (req.query.category) query.category = req.query.category;
+    debug('Finding bottles...');
+    const bottles = await Bottle.find(query);
+    const returnBottles = bottles.map((bottle) => {
+      const newBottle = bottle.toJSON();
+      newBottle.links = createBottleLinks(req.headers.host, bottle.toJSON()); // HATEOAS links
+      return newBottle;
+    });
+    return res.json(returnBottles);
   }
-  function findById(req, res, next) {
+  async function findById(req, res, next) {
     debug('in findById');
     const wineId = req.params.id;
-    (async function Result() {
-      debug('Finding bottle...');
-      try {
-        const bottle = await Bottle.findById(wineId);
-        if (bottle) {
-          req.bottle = bottle;
-          return next();
-        }
-        return res.sendStatus(404);
-      } catch (err) {
-        debug(err);
-        res.status(400);
-        res.send(err);
+    debug('Finding bottle...');
+    try {
+      const bottle = await Bottle.findById(wineId);
+      if (bottle) {
+        req.bottle = bottle;
+        return next();
       }
-    }());
+      return res.sendStatus(404);
+    } catch (err) {
+      debug(err);
+      res.status(400);
+      res.send(err);
+    }
+    return next();
   }
   function getById(req, res) {
     const returnBottle = req.bottle.toJSON();
