@@ -20,10 +20,10 @@ const debug = Debug('wineapi-express');
 
 if (process.env.ENV === 'Test') {
   debug('This is the test db');
-  const db = mongoose.connect('mongodb+srv://poisoneye7:WOfN9EnLOijmonCp@oenofile.xjz3a85.mongodb.net/winedb_test?retryWrites=true&w=majority');
+  const db = mongoose.connect('mongodb+srv://poisoneye7:********@oenofile.xjz3a85.mongodb.net/winedb_test?retryWrites=true&w=majority');
 } else {
   debug('This is the real db');
-  const db = mongoose.connect('mongodb+srv://poisoneye7:WOfN9EnLOijmonCp@oenofile.xjz3a85.mongodb.net/winedb?retryWrites=true&w=majority');
+  const db = mongoose.connect('mongodb+srv://poisoneye7:********@oenofile.xjz3a85.mongodb.net/winedb?retryWrites=true&w=majority');
 }
 
 app.use(morgan('tiny'));
