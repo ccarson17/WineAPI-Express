@@ -10,7 +10,6 @@ const Bottle = mongoose.model('Bottle');
 const agent = request.agent(app);
 
 // can send actual post to DB, then get, then put, then patch, then delete to fully test an endpoint
-// TO DO: CRUD tests on each endpoint (post, get, put, patch, delete)
 
 let testBottleId = null;
 let testBottle2Id = null;
@@ -100,7 +99,14 @@ describe('Bottle CRUD Tests (Integration)', () => {
       });
   });
   it('should allow a bottle to be deleted', (done) => {
-    agent.patch(`/api/v1/bottle/${testBottle2Id}`)
+    agent.delete(`/api/v1/bottle/${testBottleId}`)
+      .expect(204)
+      .end((err, results) => {
+        done();
+      });
+  });
+  it('should allow other bottle to be deleted', (done) => {
+    agent.delete(`/api/v1/bottle/${testBottle2Id}`)
       .expect(204)
       .end((err, results) => {
         done();

@@ -1,3 +1,4 @@
+import {} from 'dotenv/config';
 import express from 'express';
 import chalk from 'chalk'; // change color of text in logs
 import Debug from 'debug'; // provides ability to show/suppress logging
@@ -20,10 +21,10 @@ const debug = Debug('wineapi-express');
 
 if (process.env.ENV === 'Test') {
   debug('This is the test db');
-  const db = mongoose.connect('mongodb+srv://poisoneye7:WOfN9EnLOijmonCp@oenofile.xjz3a85.mongodb.net/winedb_test?retryWrites=true&w=majority');
+  const db = mongoose.connect(process.env.MONGO_DB_TEST_CONNECTION);
 } else {
   debug('This is the real db');
-  const db = mongoose.connect('mongodb+srv://poisoneye7:WOfN9EnLOijmonCp@oenofile.xjz3a85.mongodb.net/winedb?retryWrites=true&w=majority');
+  const db = mongoose.connect(process.env.MONGO_DB_CONNECTION);
 }
 
 app.use(morgan('tiny'));
