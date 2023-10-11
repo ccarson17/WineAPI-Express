@@ -13,7 +13,7 @@ function rackController(Rack) {
   const debug = Debug('wineapi-express:rackController');
   function post(req, res) {
     const data = req.body;
-    if (!data || !data.guid || !data.ownerGuid || !data.rackName) {
+    if (!data || !data.ownerId || !data.rackName || !data.rackLayout) {
       res.status(400);
       res.send('missing required items in post body');
       return;
@@ -35,8 +35,7 @@ function rackController(Rack) {
   function get(req, res) {
     (async function Result() {
       const query = {};
-      if (req.query.guid) query.guid = req.query.guid;
-      if (req.query.ownerGuid) query.varietal = req.query.ownerGuid;
+      if (req.query.ownerId) query.ownerId = req.query.ownerId;
       debug('Finding racks...');
       const racks = await Rack.find(query);
       const returnRacks = racks.map((rack) => {
@@ -78,13 +77,15 @@ function rackController(Rack) {
     rack.rackStyle = req.body.rackStyle;
     rack.rows = req.body.rows;
     rack.cols = req.body.cols;
-    rack.save()
-      .then((result) => {
-        const returnRack = result.toJSON();
-        returnRack.links = createRackLinks(req.headers.host, result); // HATEOAS links
-        res.json(returnRack);
-      })
-      .catch((err) => { res.send(err); });
+    try {
+      rack.save();
+      const returnRack = rack.toJSON();
+      returnRack.links = createRackLinks(req.headers.host, rack); // HATEOAS links
+      res.status(200);
+      res.json(returnRack);
+    } catch (err) {
+      res.send(err);
+    }
   }
   function patch(req, res) {
     const { rack } = req;
@@ -96,19 +97,24 @@ function rackController(Rack) {
       const value = item[1];
       rack[key] = value;
     });
-    rack.save()
-      .then((result) => {
-        const returnRack = result.toJSON();
-        returnRack.links = createRackLinks(req.headers.host, result); // HATEOAS links
-        res.json(returnRack);
-      })
-      .catch((err) => { res.send(err); });
+    try {
+      rack.save();
+      const returnRack = rack.toJSON();
+      returnRack.links = createRackLinks(req.headers.host, rack); // HATEOAS links
+      res.status(200);
+      res.json(returnRack);
+    } catch (err) {
+      res.send(err);
+    }
   }
   function deleteRack(req, res) {
     const { rack } = req;
-    rack.deleteOne()
-      .then(() => { res.sendStatus(204); })
-      .catch((err) => { res.send(err); });
+    try {
+      rack.deleteOne();
+      res.sendStatus(204);
+    } catch (err) {
+      res.send(err);
+    }
   }
   return {
     post, get, findById, getById, put, patch, deleteRack

@@ -68,13 +68,15 @@ function userController(User) {
   function put(req, res) {
     const { user } = req;
     user.userName = req.body.userName;
-    user.save()
-      .then((result) => {
-        const returnUser = result.toJSON();
-        returnUser.links = createUserLinks(req.headers.host, result); // HATEOAS links
-        res.json(returnUser);
-      })
-      .catch((err) => { res.send(err); });
+    try {
+      user.save();
+      const returnUser = user.toJSON();
+      returnUser.links = createUserLinks(req.headers.host, user); // HATEOAS links
+      res.status(200);
+      res.json(returnUser);
+    } catch (err) {
+      res.send(err);
+    }
   }
   function patch(req, res) {
     const { user } = req;
@@ -86,19 +88,24 @@ function userController(User) {
       const value = item[1];
       user[key] = value;
     });
-    user.save()
-      .then((result) => {
-        const returnUser = result.toJSON();
-        returnUser.links = createUserLinks(req.headers.host, result); // HATEOAS links
-        res.json(returnUser);
-      })
-      .catch((err) => { res.send(err); });
+    try {
+      user.save();
+      const returnUser = user.toJSON();
+      returnUser.links = createUserLinks(req.headers.host, user); // HATEOAS links
+      res.status(200);
+      res.json(returnUser);
+    } catch (err) {
+      res.send(err);
+    }
   }
   function deleteUser(req, res) {
     const { user } = req;
-    user.deleteOne()
-      .then(() => { res.sendStatus(204); })
-      .catch((err) => { res.send(err); });
+    try {
+      user.deleteOne();
+      res.sendStatus(204);
+    } catch (err) {
+      res.send(err);
+    }
   }
   return {
     post, get, findById, getById, put, patch, deleteUser

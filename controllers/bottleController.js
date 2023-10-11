@@ -5,11 +5,15 @@ function createBottleLinks(host, bottle) {
   const vintner = bottle.vintner ? bottle.vintner.replace(' ', '%20') : '';
   const varietal = bottle.varietal ? bottle.varietal.replace(' ', '%20') : '';
   const type = bottle.category ? bottle.category.replace(' ', '%20') : '';
-  const links = {};
-  links.self = `http://${host}/api/v1/bottle/${bottle._id}`;
-  links.FilterByThisVintner = `http://${host}/api/v1/bottle/?vintner=${vintner}`;
-  links.FilterByThisVarietal = `http://${host}/api/v1/bottle/?varietal=${varietal}`;
-  links.FilterByThisType = `http://${host}/api/v1/bottle/?type=${type}`;
+  const links = [];
+  links.push({ rel: 'self', method: 'GET', href: `http://${host}/api/v1/bottle/${bottle._id}` });
+  links.push({ rel: 'update', method: 'PUT', href: `http://${host}/api/v1/bottle/${bottle._id}` });
+  links.push({ rel: 'partialUpdate', method: 'PATCH', href: `http://${host}/api/v1/bottle/${bottle._id}` });
+  links.push({ rel: 'delete', method: 'DELETE', href: `http://${host}/api/v1/bottle/${bottle._id}` });
+  links.push({ rel: 'createNew', method: 'POST', href: `http://${host}/api/v1/bottle` });
+  links.push({ rel: 'FilterByThisVintner', method: 'GET', href: `http://${host}/api/v1/bottle/?vintner=${vintner}` });
+  links.push({ rel: 'FilterByThisVarietal', method: 'GET', href: `http://${host}/api/v1/bottle/?varietal=${varietal}` });
+  links.push({ rel: 'FilterByThisType', method: 'GET', href: `http://${host}/api/v1/bottle/?type=${type}` });
   return links;
 }
 
@@ -73,13 +77,13 @@ function bottleController(Bottle) {
     bottle.vintner = req.body.vintner;
     bottle.category = req.body.category;
     bottle.varietal = req.body.varietal;
-    bottle.save()
-      .then((result) => {
-        const returnBottle = result.toJSON();
-        returnBottle.links = createBottleLinks(req.headers.host, result); // HATEOAS links
-        res.json(returnBottle);
-      })
-      .catch((err) => { res.send(err); });
+    try {
+      bottle.save();
+      const returnBottle = bottle.toJSON();
+      returnBottle.links = createBottleLinks(req.headers.host, bottle); // HATEOAS links
+      res.status(200);
+      res.json(returnBottle);
+    } catch (err) { res.send(err); }
   }
   function patch(req, res) {
     const { bottle } = req;
@@ -91,19 +95,20 @@ function bottleController(Bottle) {
       const value = item[1];
       bottle[key] = value;
     });
-    bottle.save()
-      .then((result) => {
-        const returnBottle = result.toJSON();
-        returnBottle.links = createBottleLinks(req.headers.host, result); // HATEOAS links
-        res.json(returnBottle);
-      })
-      .catch((err) => { res.send(err); });
+    try {
+      bottle.save();
+      const returnBottle = bottle.toJSON();
+      returnBottle.links = createBottleLinks(req.headers.host, bottle); // HATEOAS links
+      res.status(200);
+      res.json(returnBottle);
+    } catch (err) { res.send(err); }
   }
   function deleteBottle(req, res) {
     const { bottle } = req;
-    bottle.deleteOne()
-      .then(() => { res.sendStatus(204); })
-      .catch((err) => { res.send(err); });
+    try {
+      bottle.deleteOne();
+      res.sendStatus(204);
+    } catch (err) { res.send(err); }
   }
   return {
     post, get, findById, getById, put, patch, deleteBottle
